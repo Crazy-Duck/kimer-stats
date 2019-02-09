@@ -1,0 +1,71 @@
+mixin player(title, name, picture, value)
+    .vertical(class="player")
+        .gametitle= title
+        div= value
+        img(src=picture, class="playerpic")
+        .playername= name
+
+mixin hero(name, picks, picture)
+    .vertical(class="hero")
+        img(src=picture, class="heropic")
+        div #{ name } (#{ picks })
+
+mixin team(name, picture, win)
+    .team&attributes(attributes)
+        .winner #{win?"Winner":""}
+        img(src=picture, class="teampic")
+        .teamname= name
+
+mixin game(title, value, stats)
+    .vertical(class="game")
+        .gametitle= title
+        div= value
+        .horizontal
+            +team(
+                stats.radiant.name, 
+                stats.radiant.logo ? stats.radiant.logo : "/img/radiant.png", 
+                stats.radiantWin
+            )
+            .vs vs
+            +team(
+                stats.dire.name, 
+                stats.dire.logo ? stats.dire.logo : "/img/dire.png",  
+                !stats.radiantWin
+            )(class="rightalign")
+
+doctype html
+html
+    head
+        link(rel='stylesheet', href='/css/style.css', type='text/css')
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Satisfy")
+    body
+        .vertical
+            h1 RD2L
+            .season SEASON 16
+            .subtitle Sunday stats by Kimer
+            .horizontal
+                    +game('Shortest game', shortestGame.duration, shortestGame)
+                    +game('Most kills', mostKillsGame.kills, mostKillsGame)
+                    +game('Earliest first blood', firstFirstBloodGame.firstBloodTime, firstFirstBloodGame)
+            .horizontal
+                    +game('Longest game', longestGame.duration, longestGame)
+                    +game('Least kills', leastKillsGame.kills, leastKillsGame)
+                    +game('Latest first blood', lastFirstBloodGame.firstBloodTime, lastFirstBloodGame)
+            .heroes MOST PICKED HEROES
+            .horizontal
+                +hero(heroes[1].hero, heroes[1].count, heroes[1].picture)
+                +hero(heroes[2].hero, heroes[2].count, heroes[2].picture)
+                +hero(heroes[0].hero, heroes[0].count, heroes[0].picture)
+            .heroes PLAYER ACHIEVEMENTS
+            .horizontal
+                +player("Highest hero dmg", players.highestHD.name, players.highestHD.avatarFull, players.highestHD.heroDamage)
+                +player("Most deaths", players.mostDeaths.name, players.mostDeaths.avatarFull, players.mostDeaths.numDeaths)
+                +player("Most kills", players.mostKills.name, players.mostKills.avatarFull, players.mostKills.numKills)
+                +player("Most assists", players.mostAssists.name, players.mostAssists.avatarFull, players.mostAssists.numAssists)
+                +player("Highest tower dmg", players.highestTD.name, players.highestTD.avatarFull, players.highestTD.towerDamage)
+            .horizontal
+                +player("Highest GPM", players.highestGPM.name, players.highestGPM.avatarFull, players.highestGPM.goldPerMinute)
+                +player("Highest XPM", players.highestXPM.name, players.highestXPM.avatarFull, players.highestXPM.expPerMinute)
+                +player("Most last hits", players.highestLH.name, players.highestLH.avatarFull, players.highestLH.numLastHits)
+                +player("Most denies", players.highestDN.name, players.highestDN.avatarFull, players.highestDN.numDenies)
+                +player("Highest hero healing", players.highestHH.name, players.highestHH.avatarFull, players.highestHH.heroHealing)

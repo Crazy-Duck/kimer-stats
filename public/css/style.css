@@ -1,0 +1,111 @@
+html {
+    font-family: 'Helvetica';
+    font-style: italic;
+    text-transform: uppercase;
+    color: white;
+    background-color: #58606d;
+}
+
+h1 {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-style: normal;
+    font-size: 70px;
+}
+
+.season {
+    margin-bottom: 20px;
+    font-style: normal;
+    font-size: 200%;
+}
+
+.heroes {
+    margin-top: 30px;
+    font-style: normal;
+    font-size: 200%;
+}
+
+.subtitle {
+    font-family: 'Satisfy', cursive;
+    text-transform: none;
+    font-size: 300%;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+}
+
+.game {
+    margin: 10px 20px 10px 20px;
+    width: 350px;
+}
+
+.gametitle {
+    text-align: center;
+    font-weight: bold;
+}
+
+.winner {
+    height: 20px;
+    font-size: 70%;
+    font-family: 'Satisfy', cursive;
+    color: lime;
+}
+
+.vs {
+    margin-top: 45px;
+    font-family: 'Satisfy', cursive;
+    color: red;
+}
+
+.team {
+    width: 130px;
+}
+
+.rightalign {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.hero {
+    margin: 30px;
+}
+
+.heropic {
+    height: 144px;
+    width: 256px;
+    object-fit: contain;
+    border: solid white 2px;
+}
+
+.teampic {
+    height: 60px;
+    width: 100px;
+    object-fit: contain;
+    border: solid white 2px;
+}
+
+.teamname {
+    font-size: 50%;
+}
+
+.player {
+    margin: 30px 10px 30px 10px;
+    width: 200px;
+}
+
+.playerpic {
+    height: 100px;
+    width: 100px;
+    border: solid white 2px;
+    object-fit: contain;
+}
