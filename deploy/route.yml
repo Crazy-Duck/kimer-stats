@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: kimerstats
+spec:
+  to:
+    kind: Service
+    name: kimerstats
+  tls:
+    termination: edge

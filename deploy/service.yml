@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kimerstats
+spec:
+  selector:
+    name: kimerstats
+  ports:
+    - port: 443
+      targetPort: 3000

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: kimerstats
+spec:
+  template:
+    metadata:
+      labels:
+        name: kimerstats
+    spec:
+      containers:
+        - name: kimerstats
+          image: kreziduk/kimer-stats
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+  replicas: 1
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - kimerstats
+        from:
+          kind: ImageStreamTag
+          name: kimer-stats:latest
+  strategy:
+    type: Rolling
+  paused: false
