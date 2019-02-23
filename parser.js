@@ -10,7 +10,7 @@ const pageSize = 250;
 
 const stratz = axios.create({
     baseURL: 'https://api.stratz.com/api/v1',
-    timeout: 5000
+    timeout: 10000
 })
 
 const heroes = JSON.parse(fs.readFileSync('heroes.json'));
@@ -35,7 +35,13 @@ async function getAllMatches(league) {
         matches.results.push(...(await getMatches(league, fetched)).data.results);
         fetched += pageSize;
     }
-    return matches.results;
+    let stats = matches.results;
+    stats
+        .flatMap(match => match.players)
+        .forEach(player => {
+            player.hero = convertIdToHero(player.hero);
+        });
+    return stats;
 }
 
 function getStat(matches, stat) {
@@ -51,13 +57,23 @@ function timeToString(time) {
     return sign + date.toISOString().substr(11, 8);
 }
 
+function convertIdToHero(id) {
+    let hero = heroes.filter(h => h.id === Number(id))[0];
+    return {
+        id,
+        hero: hero.localized_name, 
+        picture: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_full.png`,
+        portrait: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_vert.jpg`
+    };
+}
+
 async function parse(matches, regions, from, to) {
     let stats = {};
     matches = matches.filter(match => 
         regions.includes(match.regionId)
         && match.endDate > from
         && match.endDate < to);
-
+    
     let durations = matches
         .map(match => ({ 
             duration: match.duration, 
@@ -124,17 +140,14 @@ async function parse(matches, regions, from, to) {
         .flatMap(match => match.players)
         .map(player => player.hero)
         .reduce((acc, curr) => {
-            acc[curr] = (acc[curr] || 0) + 1;
+            acc[curr.id] = (acc[curr.id] || 0) + 1;
             return acc;
         }, {});
     let pickCounts = Object.keys(picks)
         .map(id => {
-            let hero = heroes.filter(h => h.id === Number(id))[0];
-            return {
-                hero: hero.localized_name, 
-                count: picks[id],
-                picture: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_full.png`
-            };
+            let hero = convertIdToHero(id);
+            hero.count = picks[id];
+            return hero;
         })
         .sort((a, b) => a.count - b.count);
     stats.heroes = pickCounts.slice(-3);

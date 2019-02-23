@@ -103,9 +103,17 @@ h1 {
     width: 200px;
 }
 
+.playerimgs {
+    border: solid white 2px;
+}
+
 .playerpic {
     height: 100px;
     width: 100px;
-    border: solid white 2px;
+    object-fit: contain;
+}
+
+.heroportrait {
+    height: 100px;
     object-fit: contain;
 }
