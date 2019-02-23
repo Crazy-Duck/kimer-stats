@@ -105,6 +105,7 @@ h1 {
 
 .playerimgs {
     border: solid white 2px;
+    height: 100px;
 }
 
 .playerpic {
