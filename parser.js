@@ -30,18 +30,17 @@ async function getAllMatches(league) {
     console.log('Fetching first batch');
     let matches = (await getMatches(league, 0)).data;
     fetched += pageSize;
-    while (fetched < matches.total) {
+    while (matches.length >= fetched) {
         console.log('Fetching next batch');
-        matches.results.push(...(await getMatches(league, fetched)).data.results);
+        matches.push(...(await getMatches(league, fetched)).data);
         fetched += pageSize;
     }
-    let stats = matches.results;
-    stats
+    matches
         .flatMap(match => match.players)
         .forEach(player => {
             player.hero = convertIdToHero(player.hero);
         });
-    return stats;
+    return matches;
 }
 
 function getStat(matches, stat) {
