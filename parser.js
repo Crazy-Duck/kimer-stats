@@ -72,6 +72,9 @@ async function parse(matches, regions, from, to) {
         regions.includes(match.regionId)
         && match.endDate > from
         && match.endDate < to);
+
+    // Set for each player if they won
+    matches.forEach(m => m.players.forEach(p => p.hasWon = m.didRadiantWin == p.isRadiant));
     
     let durations = matches
         .map(match => ({ 
