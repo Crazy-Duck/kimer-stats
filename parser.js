@@ -38,7 +38,7 @@ async function getAllMatches(league) {
     matches
         .flatMap(match => match.players)
         .forEach(player => {
-            player.hero = convertIdToHero(player.hero);
+            player.hero = convertIdToHero(player.heroId);
         });
     return matches;
 }
@@ -70,21 +70,22 @@ async function parse(matches, regions, from, to) {
     let stats = {};
     matches = matches.filter(match => 
         regions.includes(match.regionId)
-        && match.endDate > from
-        && match.endDate < to);
+        && match.endDateTime > from
+        && match.endDateTime < to);
 
     // Set for each player if they won
     matches.forEach(m => m.players.forEach(p => p.hasWon = m.didRadiantWin == p.isRadiant));
     
     let durations = matches
         .map(match => ({ 
-            duration: match.duration, 
+            duration: match.durationSeconds, 
             id: match.id, 
             radiant: match.radiantTeam, 
             dire: match.direTeam, 
             radiantWin: match.didRadiantWin
         }))
         .sort((a, b) => a.duration - b.duration);
+
     stats.shortestGame = durations[0];
     stats.shortestGame.duration = timeToString(stats.shortestGame.duration);
     stats.longestGame = durations[durations.length-1];
@@ -102,20 +103,6 @@ async function parse(matches, regions, from, to) {
     stats.leastKillsGame = kills[0];
     stats.mostKillsGame = kills[kills.length-1];
 
-    let firstBloods = matches
-        .map(match => ({ 
-            firstBloodTime: match.firstBloodTime, 
-            id: match.id,
-            radiant: match.radiantTeam, 
-            dire: match.direTeam, 
-            radiantWin: match.didRadiantWin
-        }))
-        .sort((a, b) => a.firstBloodTime - b.firstBloodTime);
-    stats.firstFirstBloodGame = firstBloods[0];
-    stats.firstFirstBloodGame.firstBloodTime = timeToString(stats.firstFirstBloodGame.firstBloodTime);
-    stats.lastFirstBloodGame = firstBloods[firstBloods.length-1];
-    stats.lastFirstBloodGame.firstBloodTime = timeToString(stats.lastFirstBloodGame.firstBloodTime);
-    
     stats.players = {};
     let playerKills = getStat(matches, 'numKills');
     stats.players.mostKills = playerKills[playerKills.length-1]
