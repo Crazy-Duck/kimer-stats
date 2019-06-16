@@ -93,7 +93,7 @@ async function parse(matches, regions, from, to) {
     
     let kills = matches
         .map(match => ({
-            kills: match.radiantKills + match.direKills,
+            kills: match.players.map(a => a.numKills).reduce((a,b) => a + b),
             id: match.id, 
             radiant: match.radiantTeam, 
             dire: match.direTeam, 
@@ -112,7 +112,7 @@ async function parse(matches, regions, from, to) {
     stats.players.mostAssists = playerAssists[playerAssists.length-1];
     let playerGPM = getStat(matches, 'goldPerMinute');
     stats.players.highestGPM = playerGPM[playerGPM.length-1];
-    let playerXPM = getStat(matches, 'expPerMinute');
+    let playerXPM = getStat(matches, 'experiencePerMinute');
     stats.players.highestXPM = playerXPM[playerXPM.length-1];
     let lastHits = getStat(matches, 'numLastHits');
     stats.players.highestLH = lastHits[lastHits.length-1];

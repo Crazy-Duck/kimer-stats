@@ -3,7 +3,7 @@ mixin player(title, name, picture, value, hero, hasWon)
         .gametitle= title
         div= value
         .playerimgs(class={"win": hasWon})
-            img(src=picture, class="playerpic")
+            img(src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + picture, class="playerpic")
             img(src=hero.portrait, class="heroportrait")
         .playername #{name}
 
@@ -58,14 +58,14 @@ html
                 +hero(heroes[0].hero, heroes[0].count, heroes[0].picture)
             .heroes PLAYER ACHIEVEMENTS
             .horizontal
-                +player("Highest hero dmg", players.highestHD.name, players.highestHD.avatarFull, players.highestHD.heroDamage, players.highestHD.hero, players.highestHD.hasWon)
-                +player("Most deaths", players.mostDeaths.name, players.mostDeaths.avatarFull, players.mostDeaths.numDeaths, players.mostDeaths.hero, players.mostDeaths.hasWon)
-                +player("Most kills", players.mostKills.name, players.mostKills.avatarFull, players.mostKills.numKills, players.mostKills.hero, players.mostKills.hasWon)
-                +player("Most assists", players.mostAssists.name, players.mostAssists.avatarFull, players.mostAssists.numAssists, players.mostAssists.hero, players.mostAssists.hasWon)
-                +player("Highest tower dmg", players.highestTD.name, players.highestTD.avatarFull, players.highestTD.towerDamage, players.highestTD.hero, players.highestTD.hasWon)
+                +player("Highest hero dmg", players.highestHD.steamAccount.name, players.highestHD.steamAccount.avatar, players.highestHD.heroDamage, players.highestHD.hero, players.highestHD.hasWon)
+                +player("Most deaths", players.mostDeaths.steamAccount.name, players.mostDeaths.steamAccount.avatar, players.mostDeaths.numDeaths, players.mostDeaths.hero, players.mostDeaths.hasWon)
+                +player("Most kills", players.mostKills.steamAccount.name, players.mostKills.steamAccount.avatar, players.mostKills.numKills, players.mostKills.hero, players.mostKills.hasWon)
+                +player("Most assists", players.mostAssists.steamAccount.name, players.mostAssists.steamAccount.avatar, players.mostAssists.numAssists, players.mostAssists.hero, players.mostAssists.hasWon)
+                +player("Highest tower dmg", players.highestTD.steamAccount.name, players.highestTD.steamAccount.avatar, players.highestTD.towerDamage, players.highestTD.hero, players.highestTD.hasWon)
             .horizontal
-                +player("Highest GPM", players.highestGPM.name, players.highestGPM.avatarFull, players.highestGPM.goldPerMinute, players.highestGPM.hero, players.highestGPM.hasWon)
-                +player("Highest XPM", players.highestXPM.name, players.highestXPM.avatarFull, players.highestXPM.expPerMinute, players.highestXPM.hero, players.highestXPM.hasWon)
-                +player("Most last hits", players.highestLH.name, players.highestLH.avatarFull, players.highestLH.numLastHits, players.highestLH.hero, players.highestLH.hasWon)
-                +player("Most denies", players.highestDN.name, players.highestDN.avatarFull, players.highestDN.numDenies, players.highestDN.hero, players.highestDN.hasWon)
-                +player("Highest hero healing", players.highestHH.name, players.highestHH.avatarFull, players.highestHH.heroHealing, players.highestHH.hero, players.highestHH.hasWon)
+                +player("Highest GPM", players.highestGPM.steamAccount.name, players.highestGPM.steamAccount.avatar, players.highestGPM.goldPerMinute, players.highestGPM.hero, players.highestGPM.hasWon)
+                +player("Highest XPM", players.highestXPM.steamAccount.name, players.highestXPM.steamAccount.avatar, players.highestXPM.expPerMinute, players.highestXPM.hero, players.highestXPM.hasWon)
+                +player("Most last hits", players.highestLH.steamAccount.name, players.highestLH.steamAccount.avatar, players.highestLH.numLastHits, players.highestLH.hero, players.highestLH.hasWon)
+                +player("Most denies", players.highestDN.steamAccount.name, players.highestDN.steamAccount.avatar, players.highestDN.numDenies, players.highestDN.hero, players.highestDN.hasWon)
+                +player("Highest hero healing", players.highestHH.steamAccount.name, players.highestHH.steamAccount.avatar, players.highestHH.heroHealing, players.highestHH.hero, players.highestHH.hasWon)
