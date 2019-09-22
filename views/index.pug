@@ -1,11 +1,11 @@
-mixin player(title, name, picture, value, hero, isVictory)
+mixin player(title, stat, value)
     .vertical(class="player")
         .gametitle= title
-        div= value
-        .playerimgs(class={"win": isVictory})
-            img(src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + picture, class="playerpic")
-            img(src=hero.portrait, class="heroportrait")
-        .playername #{name}
+        div= players[stat][value]
+        .playerimgs(class={"win": players[stat].win})
+            img(src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + players[stat].steamAccount.avatar, class="playerpic")
+            img(src=players[stat].hero.portrait, class="heroportrait")
+        .playername #{players[stat].steamAccount.name}
 
 mixin hero(name, picks, picture)
     .vertical(class="hero")
@@ -46,11 +46,11 @@ html
             .season SEASON 18
             .subtitle Sunday stats by Kimer
             .horizontal
-            //        +game('Shortest game', shortestGame.duration, shortestGame)
-            //        +game('Least kills', leastKillsGame.kills, leastKillsGame)
+                +game('Shortest game', shortestGame.duration, shortestGame)
+                +game('Least kills', leastKillsGame.kills, leastKillsGame)
             .horizontal
-            //        +game('Longest game', longestGame.duration, longestGame)
-            //        +game('Most kills', mostKillsGame.kills, mostKillsGame)
+                +game('Longest game', longestGame.duration, longestGame)
+                +game('Most kills', mostKillsGame.kills, mostKillsGame)
             .heroes MOST PICKED HEROES
             .horizontal
                 +hero(heroes[1].hero, heroes[1].count, heroes[1].picture)
@@ -58,19 +58,19 @@ html
                 +hero(heroes[0].hero, heroes[0].count, heroes[0].picture)
             .heroes PLAYER ACHIEVEMENTS
             .horizontal
-                +player("Highest hero dmg", players.highestHD.steamAccount.name, players.highestHD.steamAccount.avatar, players.highestHD.hero_damage, players.highestHD.hero, players.highestHD.isVictory)
-                +player("Most deaths", players.mostDeaths.steamAccount.name, players.mostDeaths.steamAccount.avatar, players.mostDeaths.deaths, players.mostDeaths.hero, players.mostDeaths.isVictory)
-                +player("Most kills", players.mostKills.steamAccount.name, players.mostKills.steamAccount.avatar, players.mostKills.kills, players.mostKills.hero, players.mostKills.isVictory)
-                +player("Most assists", players.mostAssists.steamAccount.name, players.mostAssists.steamAccount.avatar, players.mostAssists.assists, players.mostAssists.hero, players.mostAssists.isVictory)
-                +player("Highest tower dmg", players.highestTD.steamAccount.name, players.highestTD.steamAccount.avatar, players.highestTD.tower_damage, players.highestTD.hero, players.highestTD.isVictory)
+                +player("Highest hero dmg", "highestHD", "hero_damage")
+                +player("Most deaths", "mostDeaths", "deaths")
+                +player("Most kills", "mostKills", "kills")
+                +player("Most assists", "mostAssists", "assists")
+                +player("Highest tower dmg", "highestTD", "tower_damage")
             .horizontal
-                +player("Highest GPM", players.highestGPM.steamAccount.name, players.highestGPM.steamAccount.avatar, players.highestGPM.gold_per_min, players.highestGPM.hero, players.highestGPM.isVictory)
-                +player("Highest XPM", players.highestXPM.steamAccount.name, players.highestXPM.steamAccount.avatar, players.highestXPM.xp_per_min, players.highestXPM.hero, players.highestXPM.isVictory)
-                +player("Most last hits", players.highestLH.steamAccount.name, players.highestLH.steamAccount.avatar, players.highestLH.last_hits, players.highestLH.hero, players.highestLH.isVictory)
-                +player("Most denies", players.highestDN.steamAccount.name, players.highestDN.steamAccount.avatar, players.highestDN.denies, players.highestDN.hero, players.highestDN.isVictory)
-                +player("Highest hero healing", players.highestHH.steamAccount.name, players.highestHH.steamAccount.avatar, players.highestHH.hero_healing, players.highestHH.hero, players.highestHH.isVictory)
+                +player("Highest GPM", "highestGPM", "gold_per_min")
+                +player("Highest XPM", "highestXPM", "xp_per_min")
+                +player("Most last hits", "highestLH", "last_hits")
+                +player("Most denies", "highestDN", "denies")
+                +player("Highest hero healing", "highestHH", "hero_healing")
             .horizontal
-                +player("Most observers", players.obsPlaced.steamAccount.name, players.obsPlaced.steamAccount.avatar, players.obsPlaced.obs_placed, players.obsPlaced.hero, players.obsPlaced.isVictory)
-                +player("Most sentries", players.senPlaced.steamAccount.name, players.senPlaced.steamAccount.avatar, players.senPlaced.sen_placed, players.senPlaced.hero, players.senPlaced.isVictory)
-                +player("Most runes yoinked", players.runes.steamAccount.name, players.runes.steamAccount.avatar, players.runes.rune_pickups, players.runes.hero, players.runes.isVictory)
-                +player("Most camps stacked", players.stacks.steamAccount.name, players.stacks.steamAccount.avatar, players.stacks.camps_stacked, players.stacks.hero, players.stacks.isVictory)
+                +player("Most observers", "obsPlaced", "obs_placed")
+                +player("Most sentries", "senPlaced", "sen_placed")
+                +player("Most runes yoinked", "runes", "rune_pickups")
+                +player("Most camps stacked", "stacks", "camps_stacked")
