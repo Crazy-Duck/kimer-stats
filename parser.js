@@ -139,14 +139,15 @@ async function parse(matches, regions, from, to) {
     stats.players.highestTD = towerDamage[towerDamage.length-1];
     let heroHealing = getStat(matches, 'hero_healing');
     stats.players.highestHH = heroHealing[heroHealing.length-1];
-    let obsPlaced = getStat(matches, 'obs_placed');
-    stats.players.obsPlaced = obsPlaced[obsPlaced.length-1];
-    let senPlaced = getStat(matches, 'sen_placed');
-    stats.players.senPlaced = senPlaced[senPlaced.length-1];
     let runes = getStat(matches, 'rune_pickups');
     stats.players.runes = runes[runes.length-1];
     let stacks = getStat(matches, 'camps_stacked');
     stats.players.stacks = stacks[stacks.length-1];
+    let couriers = getStat(matches, 'courier_kills');
+    stats.players.couriers = couriers[couriers.length-1]
+    let fatCat = getStat(matches, 'total_gold');
+    stats.players.fatCat = fatCat[fatCat.length-1];
+    stats.players.hobo = fatCat[0];
 
     let picks = matches
         .flatMap(match => match.players)
