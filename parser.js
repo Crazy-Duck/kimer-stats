@@ -48,7 +48,7 @@ async function getAllMatches(league) {
         .forEach(m => {
             let match = matches.find(stratz => stratz.id == m.match_id);
             m.players.forEach(player => {
-                player.steamAccount = match.players.find(stratz => stratz.steamId == player.account_id).steamAccount;
+                player.steamAccount = match.players.find(stratz => stratz.steamAccountId == player.account_id).steamAccount;
                 player.hero = convertIdToHero(player.hero_id);
             });
             m.regionId = match.regionId;
