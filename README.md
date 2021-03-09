@@ -40,3 +40,16 @@ Listening on port 3000
 ```
 
 If you now point your browser to https://localhost:3000, you will see a page allowing you to select the time period for which you want to pull statistics. Entering the dates and clicking `Stats` will show you the statistics.
+
+## Customization
+
+### views/index.pug
+This file contains the structural layout of the stats page. 
+If you want to adapt text, this is the place to look.
+
+### public/css/style.css
+This file contains all the markup of the stats page.
+If you want to adapt font, colour, size, ... this is the place to look.
+
+### server.js
+Sick and tired of always having to type the league id? You can hard-code it in here!
