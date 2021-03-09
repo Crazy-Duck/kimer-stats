@@ -3,7 +3,7 @@ html {
     font-style: italic;
     text-transform: uppercase;
     color: white;
-    background-color: #58606d;
+    background-color: #719eed;
 }
 
 h1 {
@@ -55,7 +55,7 @@ h1 {
 .winner {
     height: 20px;
     font-size: 70%;
-    font-family: 'Satisfy', cursive;
+    font-family: 'Poppins', cursive;
     color: lime;
 }
 

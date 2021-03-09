@@ -165,7 +165,7 @@ async function parse(matches, regions, from, to) {
         .sort((a, b) => a.count - b.count);
     stats.heroes = pickCounts.slice(-3);
 
-    console.log(JSON.stringify(stats, null, 2));
+    // console.log(JSON.stringify(stats, null, 2));
     return stats;
 
 }
