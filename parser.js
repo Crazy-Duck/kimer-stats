@@ -147,7 +147,7 @@ async function parse(matches, regions, from, to) {
     stats.players.couriers = couriers[couriers.length-1]
     let fatCat = getStat(matches, 'total_gold');
     stats.players.fatCat = fatCat[fatCat.length-1];
-    stats.players.hobo = fatCat[0];
+    stats.players.pauper = fatCat[0];
 
     let picks = matches
         .flatMap(match => match.players)
