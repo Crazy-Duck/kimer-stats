@@ -39,7 +39,7 @@ Fetching opendota matches
 Listening on port 3000
 ```
 
-If you now point your browser to https://localhost:3000, you will see a page allowing you to select the time period for which you want to pull statistics. Entering the dates and clicking `Stats` will show you the statistics.
+If you now point your browser to http://localhost:3000, you will see a page allowing you to select the time period for which you want to pull statistics. Entering the dates and clicking `Stats` will show you the statistics.
 
 ## Customization
 
