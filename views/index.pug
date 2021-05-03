@@ -7,9 +7,9 @@ mixin player(title, stat, value)
             img(src=players[stat].hero.portrait, class="heroportrait")
         .playername #{players[stat].steamAccount.name}
 
-mixin hero(name, picks, picture)
+mixin hero(name, picks, picture, position)
     .vertical(class="hero")
-        img(src=picture, class="heropic")
+        img(src=picture, class=position)
         div #{ name } (#{ picks })
 
 mixin team(name, picture, win)
@@ -54,9 +54,9 @@ html
                 +game('Most kills', mostKillsGame.kills, mostKillsGame)
             .heroes MOST PICKED HEROES
             .horizontal
-                +hero(heroes[1].hero, heroes[1].count, heroes[1].picture)
-                +hero(heroes[2].hero, heroes[2].count, heroes[2].picture)
-                +hero(heroes[0].hero, heroes[0].count, heroes[0].picture)
+                +hero(heroes[1].hero, heroes[1].count, heroes[1].picture, "second")
+                +hero(heroes[2].hero, heroes[2].count, heroes[2].picture, "first")
+                +hero(heroes[0].hero, heroes[0].count, heroes[0].picture, "third")
             .heroes PLAYER ACHIEVEMENTS
             .horizontal
                 +player("Highest hero dmg", "highestHD", "hero_damage")
