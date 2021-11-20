@@ -11,7 +11,8 @@ const pageSize = 250;
 
 const stratz = axios.create({
     baseURL: 'https://api.stratz.com/api/v1',
-    timeout: 10000
+    timeout: 10000,
+    headers: {'Authorization': `Bearer ${process.env.STRATZ_API_KEY}`}
 });
 const opendota = rateLimit(axios.create({
     baseURL: 'https://api.opendota.com/api',

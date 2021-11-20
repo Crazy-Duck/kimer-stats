@@ -14,6 +14,10 @@ To install, open a command prompt/shell/... in the root directory of the project
 $> npm install
 ```
 
+Accessing the Stratz API requires an API key token to be provided with all requests. You can obtain such an API key token by going to the [Stratz API](https://stratz.com/api) and scrolling down to the "My Tokens" section.
+This section is blurred out and can be made visible by clicking "Show Token Information" just below the blurred out box. Copy your token. Next, in the root folder of this project, create a file called `.env`.
+This file should only contain 1 line, namely `STRATZ_API_KEY=eyJ......` where the part after the equals sign is your api key token. This token will be valid for 1 year
+
 ## Running the application
 
 To start the application, open a command prompt/shell/... in the root directory of the project (in which you found this README) and execute the following command, substituting `<leagueId>` with the ID of your league:

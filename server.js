@@ -1,10 +1,11 @@
+require('dotenv').config()
 const express = require('express');
 const { getAllMatches, parse } = require('./parser.js');
 
 const app = express();
 const port = 3000;
 
-const league = process.argv[2] || 12807;
+const league = process.argv[2] || 13515;
 
 let stats = {};
 
