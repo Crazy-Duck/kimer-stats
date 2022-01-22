@@ -1,5 +1,6 @@
 const axios = require('axios');
 const rateLimit = require('axios-rate-limit');
+const retry = require('axios-retry');
 const fs = require('fs');
 
 // Node doesn't contain flatMap for some reason
@@ -17,9 +18,12 @@ const stratz = axios.create({
 const opendota = rateLimit(axios.create({
     baseURL: 'https://api.opendota.com/api',
     timeout: 10000
-}), { maxRequests: 1, perMilliseconds: 1000});
+}), { maxRequests: 1, perMilliseconds: 2000});
 stratz.interceptors.response.use(r => r.data, err => Promise.reject(err));
 opendota.interceptors.response.use(r => r.data, err => Promise.reject(err));
+retry(stratz, { retries: 3 });
+retry(opendota, { retries: 3 });
+
 
 const heroes = JSON.parse(fs.readFileSync('heroes.json'));
 
@@ -45,6 +49,7 @@ async function getAllMatches(league) {
     }
     console.log('Fetching opendota matches');
     let odota_matches = await Promise.all(matches.map(m => opendota.get(`/matches/${m.id}`)));
+    //let odota_matches = await opendota.get(`/matches/${matches[0].id}`);
     odota_matches
         .forEach(m => {
             let match = matches.find(stratz => stratz.id == m.match_id);
@@ -59,6 +64,7 @@ async function getAllMatches(league) {
             m.direTeam = match.direTeam;
             m.radiantTeam = match.radiantTeam;
         });
+
     return odota_matches;
 }
 
@@ -80,7 +86,7 @@ function convertIdToHero(id) {
     return {
         id,
         hero: hero.localized_name, 
-        picture: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_full.png`,
+        picture: `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${hero.name.slice(14)}.png`,
         portrait: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_vert.jpg`
     };
 }
@@ -165,6 +171,23 @@ async function parse(matches, regions, from, to) {
         })
         .sort((a, b) => a.count - b.count);
     stats.heroes = pickCounts.slice(-3);
+
+    let bans = matches
+        .flatMap(match => match.picks_bans)
+        .filter(pick => pick && !pick.is_pick)
+        .map(pick => pick.hero_id)
+        .reduce((acc, curr) => {
+            acc[curr] = (acc[curr] || 0) + 1;
+            return acc;
+        }, {});
+    let banCounts = Object.keys(bans)
+        .map(id => {
+            let hero = convertIdToHero(id);
+            hero.count = bans[id];
+            return hero;
+        })
+        .sort((a, b) => a.count - b.count);
+    stats.bans = banCounts.slice(-3);
 
     // console.log(JSON.stringify(stats, null, 2));
     return stats;

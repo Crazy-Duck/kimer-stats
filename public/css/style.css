@@ -124,7 +124,9 @@ h1 {
 
 .playerimgs {
     border: solid red 2px;
-    height: 100px;
+    height: 156px;
+    display: flex;
+    flex-direction: column;
 }
 
 .win {
@@ -138,6 +140,6 @@ h1 {
 }
 
 .heroportrait {
-    height: 100px;
+    height: 56px;
     object-fit: contain;
 }
