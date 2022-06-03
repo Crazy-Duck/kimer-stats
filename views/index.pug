@@ -3,7 +3,7 @@ mixin player(title, stat, value)
         .gametitle= title
         div= players[stat][value]
         .playerimgs(class={"win": players[stat].win})
-            img(src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + players[stat].steamAccount.avatar, class="playerpic")
+            img(src=players[stat].steamAccount.avatar, class="playerpic")
             img(src=players[stat].hero.picture, class="heroportrait")
         .playername #{players[stat].steamAccount.name}
 

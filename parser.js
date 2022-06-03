@@ -3,12 +3,8 @@ const rateLimit = require('axios-rate-limit');
 const retry = require('axios-retry');
 const fs = require('fs');
 
-// Node doesn't contain flatMap for some reason
-Array.prototype.flatMap = function(lambda) { 
-    return Array.prototype.concat.apply([], this.map(lambda)); 
-};
-
 const pageSize = 250;
+const odotaDelay = 2000;
 
 const stratz = axios.create({
     baseURL: 'https://api.stratz.com/api/v1',
@@ -18,7 +14,7 @@ const stratz = axios.create({
 const opendota = rateLimit(axios.create({
     baseURL: 'https://api.opendota.com/api',
     timeout: 10000
-}), { maxRequests: 1, perMilliseconds: 2000});
+}), { maxRequests: 1, perMilliseconds: odotaDelay});
 stratz.interceptors.response.use(r => r.data, err => Promise.reject(err));
 opendota.interceptors.response.use(r => r.data, err => Promise.reject(err));
 retry(stratz, { retries: 3 });
@@ -47,15 +43,17 @@ async function getAllMatches(league) {
         matches.push(...(await getMatches(league, fetched)));
         fetched += pageSize;
     }
-    console.log('Fetching opendota matches');
+    console.log(`Fetching ${matches.length} opendota matches\nEstimated time: ${odotaDelay / 1000 * matches.length}s`);
     let odota_matches = await Promise.all(matches.map(m => opendota.get(`/matches/${m.id}`)));
-    //let odota_matches = await opendota.get(`/matches/${matches[0].id}`);
+    
+    console.log("Combining OpenDota & Stratz data")
     odota_matches
         .forEach(m => {
             let match = matches.find(stratz => stratz.id == m.match_id);
             m.players.forEach(player => {
                 player.steamAccount = match.players.find(stratz => stratz.steamAccountId == player.account_id).steamAccount;
                 player.hero = convertIdToHero(player.hero_id);
+                player.steamAccount.avatar = "https://avatars.akamai.steamstatic.com/" + player.steamAccount.avatar.split("/").at(-1)
             });
             m.regionId = match.regionId;
             m.startDateTime = match.startDateTime;
@@ -87,7 +85,7 @@ function convertIdToHero(id) {
         id,
         hero: hero.localized_name, 
         picture: `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${hero.name.slice(14)}.png`,
-        portrait: `http://cdn.dota2.com/apps/dota2/images/heroes/${hero.name.slice(14)}_vert.jpg`
+        portrait: `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/heroes/${hero.name.slice(14)}_vert.jpg`
     };
 }
 
