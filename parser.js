@@ -23,28 +23,72 @@ retry(opendota, { retries: 3 });
 
 const heroes = JSON.parse(fs.readFileSync('heroes.json'));
 
-function getMatches(league, skip) {
-    return stratz.get(`/league/${league}/matches`, {
+const partition = (arr, fn) =>
+    arr.reduce(
+        (acc, val, i, arr) => {
+            acc[fn(val, i, arr) ? 0 : 1].push(val);
+            return acc;
+        },
+        [[], []]
+    );
+
+const getMatchesFromStratz = (league, skip) =>
+    stratz.get(`/league/${league}/matches`, {
         params: {
             include: 'Player,Team',
             take: pageSize,
             skip
         }
     });
-}
 
-async function getAllMatches(league) {
+const getAllMatchesFromStratz = async (league) => {
+    console.log(`Start fetching all match ids on ticket ${league}`);
     let fetched = 0;
     console.log('Fetching first batch');
-    let matches = await getMatches(league, 0);
+    let matches = await getMatchesFromStratz(league, 0);
     fetched += pageSize;
     while (matches.length >= fetched) {
         console.log('Fetching next batch');
-        matches.push(...(await getMatches(league, fetched)));
+        matches.push(...(await getMatchesFromStratz(league, fetched)));
         fetched += pageSize;
     }
-    console.log(`Fetching ${matches.length} opendota matches\nEstimated time: ${odotaDelay / 1000 * matches.length}s`);
+    console.log(`Finished fetching ${matches.length} match ids`);
+    return matches;
+}
+
+const fetchUnparsedGames = async (matches) => {
+    console.log("Verify if all matches are parsed...")
+    let [unparsed, parsed] = partition(matches, m => m.draft_timings == null);
+
+    console.log(`Found ${unparsed.length} unparsed matches`);
+    let jobIds = await Promise.all(unparsed.map(m => {
+        console.log(`Request parsing of match ${m.match_id}`);
+        return opendota.post(`/request/${m.match_id}`).then(d => d.job.jobId);
+    }));
+
+    let status = await Promise.all(jobIds.map(id => opendota.get(`/request/${id}`)));
+    status = status.filter(s => s);
+
+    while (status.length) {
+        let waitTime = Math.max(status.map(s => Date.parse(s.next_attempt_time))) - Date.now();
+        await new Promise(r => setTimeout(r, waitTime));
+        status = await Promise.all(status.filter(s => s).map(s => opendota.get(`/request/${s.id}`)));
+    }
+
+    console.log("All parse jobs finished, retrying previously unparsed jobs");
+    unparsed = await Promise.all(unparsed.map(m => opendota.get(`/matches/${m.match_id}`)));
+    console.log("Finished fetching previously unfetched matches");
+    return parsed.concat(unparsed);
+}
+
+async function getAllMatches(league) {
+    let matches = await getAllMatchesFromStratz(league);
+
+    console.log(`Fetching ${matches.length} OpenDota matches\nEstimated time: ${odotaDelay / 1000 * matches.length}s`);
     let odota_matches = await Promise.all(matches.map(m => opendota.get(`/matches/${m.id}`)));
+    console.log("Finished fetching match data from OpenDota");
+
+    odota_matches = await fetchUnparsedGames(odota_matches);
     
     console.log("Combining OpenDota & Stratz data")
     odota_matches
