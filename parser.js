@@ -71,8 +71,10 @@ const fetchUnparsedGames = async (matches) => {
 
     while (status.length) {
         let waitTime = Math.max(status.map(s => Date.parse(s.next_attempt_time))) - Date.now();
+        console.log(`Waiting ${waitTime}ms before checking parse requests`);
         await new Promise(r => setTimeout(r, waitTime));
         status = await Promise.all(status.filter(s => s).map(s => opendota.get(`/request/${s.id}`)));
+        status = status.filter(s => s);
     }
 
     console.log("All parse jobs finished, retrying previously unparsed jobs");
