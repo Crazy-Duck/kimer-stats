@@ -5,7 +5,7 @@ const { getAllMatches, parse } = require('./parser.js');
 const app = express();
 const port = 3000;
 
-const league = process.argv[2] || 13824;
+const league = process.argv[2] || 17072;
 
 let stats = {};
 

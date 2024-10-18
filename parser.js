@@ -3,19 +3,23 @@ const rateLimit = require('axios-rate-limit');
 const retry = require('axios-retry');
 const fs = require('fs');
 
-const pageSize = 250;
+const pageSize = 100;
 const odotaDelay = 2000;
+const stratzDelay = 1000;
 
-const stratz = axios.create({
-    baseURL: 'https://api.stratz.com/api/v1',
+const stratz = rateLimit(axios.create({
+    baseURL: 'https://api.stratz.com/graphql',
     timeout: 10000,
-    headers: {'Authorization': `Bearer ${process.env.STRATZ_API_KEY}`}
-});
+    headers: {
+        'Authorization': `Bearer ${process.env.STRATZ_API_KEY}`,
+        'User-Agent': 'STRATZ_API'
+    }
+}), { maxRequests: 20, perMilliseconds: stratzDelay});
 const opendota = rateLimit(axios.create({
     baseURL: 'https://api.opendota.com/api',
     timeout: 10000
 }), { maxRequests: 1, perMilliseconds: odotaDelay});
-stratz.interceptors.response.use(r => r.data, err => Promise.reject(err));
+stratz.interceptors.response.use(r => r.data.data.league.matches, err => Promise.reject(err));
 opendota.interceptors.response.use(r => r.data, err => Promise.reject(err));
 retry(stratz, { retries: 3 });
 retry(opendota, { retries: 3 });
@@ -33,12 +37,39 @@ const partition = (arr, fn) =>
     );
 
 const getMatchesFromStratz = (league, skip) =>
-    stratz.get(`/league/${league}/matches`, {
-        params: {
-            include: 'Player,Team',
-            take: pageSize,
-            skip
-        }
+    stratz.post('', {
+        query: `{
+                    league(id: ${league}) {
+                        matches(request: {take: ${pageSize}, skip: ${skip}}) {
+                            id,
+                            regionId,
+                            durationSeconds,
+                            startDateTime,
+                            endDateTime,
+                            radiantTeam {
+                                id,
+                                name,
+                                tag,
+                                logo
+                            },
+                            direTeam {
+                                id,
+                                name,
+                                tag,
+                                logo
+                            },
+                            players {
+                                steamAccountId,
+                                steamAccount {
+                                id,
+                                avatar,
+                                name,
+                                smurfFlag
+                                }
+                            },
+                        }
+                    }
+                }`
     });
 
 const getAllMatchesFromStratz = async (league) => {
@@ -99,7 +130,6 @@ async function getAllMatches(league) {
             m.players.forEach(player => {
                 player.steamAccount = match.players.find(stratz => stratz.steamAccountId == player.account_id).steamAccount;
                 player.hero = convertIdToHero(player.hero_id);
-                player.steamAccount.avatar = "https://avatars.akamai.steamstatic.com/" + player.steamAccount.avatar.split("/").at(-1)
             });
             m.regionId = match.regionId;
             m.startDateTime = match.startDateTime;
